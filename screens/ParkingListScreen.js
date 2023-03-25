@@ -2,7 +2,7 @@ import { SafeAreaView,View, Text, StyleSheet,Image, TouchableOpacity } from 'rea
 import React, { useLayoutEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native';
-import { UserCircleIcon, MapPinIcon,Bars3Icon} from 'react-native-heroicons/outline';
+import { UserCircleIcon, ClockIcon, WalletIcon} from 'react-native-heroicons/outline';
 import ParkingListComponent from '../components/ParkingListComponent';
 
 
@@ -12,34 +12,43 @@ const ParkingListScreen = () => {
     const handlePress = () => {
       navigation.navigate('ParkingList')
     }
+    const homeScreen = () =>{
+      navigation.navigate('Home');
+    }
     useLayoutEffect(()=> {
         navigation.setOptions({
             headerShown: false,
         })
     }, [])
+    const QRPress = () => {
+      navigation.navigate('QR')
+    }
+    const UserProfilePress = () => {
+      navigation.navigate('UserProfile')
+    }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.MenuContainer}>
       <View style={styles.menuItems}>
-          <TouchableOpacity>
-            <Bars3Icon color='#E3D33C' size={30}/>
+          <TouchableOpacity onPress={QRPress}>
+            <WalletIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={UserProfilePress}>
             <UserCircleIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handlePress}>
-            <MapPinIcon color='#E3D33C' size={30}/>
+            <ClockIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
         </View>
-        <Text style={styles.logo}>Parking+</Text>
+        <Text style={styles.logo} onPress={homeScreen}>Parking+</Text>
       </View>
       <View>
         <Image source={require('../assets/ParkingListCar.png')} style={styles.HomeImageCar} />
       </View>
       <View style={styles.locationCityContainer}>
-            <MapPinIcon color='#E3D33C' size={30} marginRight={10}/>
-            <Text style={styles.textCity}>Colombo, Sri Lanka</Text>
+            <ClockIcon color='#E3D33C' size={30} marginRight={10}/>
+            <Text style={styles.textCity}>Parking History</Text>
         </View>
       <View style={styles.ParkingListComponentStyle}>
         <ParkingListComponent/>

@@ -1,18 +1,59 @@
 import { SafeAreaView,View, Text, StyleSheet,Image, TouchableOpacity, TextInput} from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native';
-import { UserCircleIcon, MapPinIcon,Bars3Icon, QrCodeIcon} from 'react-native-heroicons/outline';
-import MapView from 'react-native-maps';
+import { UserCircleIcon, MapPinIcon,ClockIcon, WalletIcon} from 'react-native-heroicons/outline';
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 const HomeScreen = () => {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [initialRegion, setInitialRegion] = useState(null);
+
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+  
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+  
+      // Set initial region
+      setInitialRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    })();
+  }, []);
+  
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
     const navigation = useNavigation();
 
     const handlePress = () => {
       navigation.navigate('ParkingList')
     }
+    const ParkSpot = () => {
+      navigation.navigate('ParkingSpotDetail')
+    }
     const QRPress = () => {
       navigation.navigate('QR')
+    }
+    const UserProfilePress = () => {
+      navigation.navigate('UserProfile')
     }
 
     useLayoutEffect(()=> {
@@ -26,13 +67,13 @@ const HomeScreen = () => {
       <View style={styles.MenuContainer}>
         <View style={styles.menuItems}>
           <TouchableOpacity onPress={QRPress}>
-            <QrCodeIcon color='#E3D33C' size={30}/>
+            <WalletIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={UserProfilePress}>
             <UserCircleIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handlePress}>
-            <MapPinIcon color='#E3D33C' size={30}/>
+            <ClockIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
         </View>
         <Text style={styles.logo}>Parking+</Text>
@@ -51,16 +92,22 @@ const HomeScreen = () => {
         />
       </View>
       <View style={styles.MapViewContainer}>
-        <MapView
-          style={{flex: 1,borderRadius: 15,
-          }}
-          initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-          }}
-        />
+      <MapView
+  style={{ flex: 1 }}
+  initialRegion={initialRegion}
+>
+  {location && (
+    <Marker
+      coordinate={{
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }}
+      onPress={ParkSpot}
+    />
+  )}
+</MapView>
+
+
       </View>
     </SafeAreaView>
   )

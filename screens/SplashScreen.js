@@ -8,11 +8,12 @@ const SplashScreen = ({navigation}) => {
         }, 3000); // Delay splash screen for 3 seconds
       }, [navigation]);
 
-    useLayoutEffect(()=> {
+      useLayoutEffect(() => {
         navigation.setOptions({
-            headerShown: false,
-        })
-    }, [])
+          headerShown: false,
+        });
+      }, []);
+      
   return (
     <SafeAreaView style={styles.container}>
       <View>

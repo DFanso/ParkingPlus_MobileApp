@@ -2,13 +2,20 @@ import { SafeAreaView,View, Text, StyleSheet,Image,TouchableOpacity } from 'reac
 import React, { useLayoutEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native';
-import { UserCircleIcon, MapPinIcon,Bars3Icon} from 'react-native-heroicons/outline';
+import { UserCircleIcon, MapPinIcon,WalletIcon,ClockIcon} from 'react-native-heroicons/outline';
 import ParkingSpotDetails from '../components/ParkingSpotDetails';
+
 
 const ParkingSpotDetailsScreen = () => {
     const navigation = useNavigation();
     const handlePress = () => {
       navigation.navigate('ParkingList')
+    }
+    const QRPress = () => {
+      navigation.navigate('QR')
+    }
+    const UserProfilePress = () => {
+      navigation.navigate('UserProfile')
     }
 
     useLayoutEffect(()=> {
@@ -21,14 +28,14 @@ const ParkingSpotDetailsScreen = () => {
       <StatusBar style="light" />
       <View style={styles.MenuContainer}>
       <View style={styles.menuItems}>
-          <TouchableOpacity>
-            <Bars3Icon color='#E3D33C' size={30}/>
+          <TouchableOpacity onPress={QRPress}>
+            <WalletIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={UserProfilePress}>
             <UserCircleIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handlePress}>
-            <MapPinIcon color='#E3D33C' size={30}/>
+            <ClockIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
         </View>
         <Text style={styles.logo}>Parking+</Text>
