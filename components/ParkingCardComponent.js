@@ -2,7 +2,7 @@ import { View, Text,StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 
-const ParkingCardComponent = () => {
+const ParkingCardComponent = (props) => {
     const navigation = useNavigation();
 
     const handlePress = () => {
@@ -12,13 +12,10 @@ const ParkingCardComponent = () => {
     <View style={styles.container}>
         <TouchableOpacity style={styles.ParkingCardComponentStyle} onPress={handlePress}>
             <View>
-                <Text style={styles.textTitle}>Title of the place</Text>
-                <Text style={styles.textSubtitle}>Address: 123 Main St</Text>
-                <Text style={styles.textSubtitle}>Time: 2:00 PM - 4:00 PM</Text>
-                <Text style={styles.textSubtitle}>Distance: 2 miles</Text>
-            </View>
-            <View style={styles.TimeContainer}>
-                <Text style={styles.distanceTxt}>1.2km</Text>
+                <Text style={styles.textTitle}>{props.title}</Text>
+                <Text style={styles.textSubtitle}>{props.location}</Text>
+                <Text style={styles.textSubtitle}>Time: {props.startedTime} - {props.endedTime}</Text>
+                <Text style={styles.textSubtitle}>Date: {props.date}</Text>
             </View>
         </TouchableOpacity>
     </View>
@@ -26,18 +23,17 @@ const ParkingCardComponent = () => {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
     ParkingCardComponentStyle:{
         flex: 1,
         flexDirection: 'row',
-        width: '90%',
+        width: '100%',
         padding: 16,
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         borderRadius: 8,
-        margin: 20,
+        margin: 15,
     },
     textTitle: {
         color: 'white',

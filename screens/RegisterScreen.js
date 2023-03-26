@@ -1,46 +1,39 @@
-import { SafeAreaView,View, Text,StyleSheet,Image, TextInput, Button, Pressable, TouchableOpacity} from 'react-native'
+import { SafeAreaView,View, Text,StyleSheet,Image, TextInput, Button, Pressable } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import superagent from 'superagent';
 
 
-const LoginScreen = () => {
-    
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-
+const RegisterScreen = () => {
     const navigation = useNavigation();
 
-    const handlePress = async () => {
-        try {
-          const response = await superagent
-            .post('http://20.2.80.190:3000/api/user/login')
-            .send({ username, password });
-      
-          if (response.status === 200) {
-            await AsyncStorage.setItem('token', response.body.token);
-            // Save the plate number in AsyncStorage when user logs in or registers
-            await AsyncStorage.setItem('plate', response.body.plate);
-            // Save the user data (and token, if applicable) to local storage or state management
-            // localStorage.setItem('userInfo', JSON.stringify(response.body.user));
-            // Navigate to the 'Home' screen
-            navigation.navigate('Home');
-          } else {
-            // Display error message
-            console.error('Error during authentication:', response.body.message);
-          }
-        } catch (error) {
-          console.error('Error during authentication:', error.message);
-        }
-      };
-      
+    const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [numberplate, setNumberplate] = useState('');
+  const [phone, setPhone] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-      const RegisterationPress = () => {
-        navigation.navigate('Registeration');
-      };
+  const handlePress = async () => {
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    try {
+      const response = await superagent
+        .post('http://localhost:3000/api/user')
+        .send({ username, password, email, numberplate, phone });
+
+      if (response.status === 201) {
+        alert('User registered successfully');
+        navigation.navigate('Login');
+      }
+    } catch (error) {
+      alert(error.response.body.message);
+    }
+  };
 
     useLayoutEffect(()=> {
         navigation.setOptions({
@@ -51,56 +44,70 @@ const LoginScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.loginImage}>
-        <Image source={require('../assets/LoginCar.png')} />
-        <Text style={styles.textLogin}>Login</Text>
+        <Text style={styles.textLogin}>Register</Text>
       </View>
       <View style={styles.textInputContainer}>
         <Text style={styles.textInputLoginLabel}>Username</Text>
         <TextInput 
             style={styles.textInput}
-            placeholder='Username'
-            onChangeText={text => setUsername(text)}
-            value={username}
+            placeholder='UserName'
+            onChangeText={(text) => setUsername(text)}
+        />
+        <Text style={styles.textInputLoginLabelPassword}>Email</Text>
+        <TextInput
+            style={styles.textInput}
+            placeholder='Email'
+            onChangeText={(text) => setEmail(text)}
+        />
+        <Text style={styles.textInputLoginLabel}>Number-Plate</Text>
+        <TextInput 
+            style={styles.textInput}
+            placeholder='Number-Plate'
+            onChangeText={(text) => setNumberplate(text)}
+        />
+        <Text style={styles.textInputLoginLabelPassword}>Phone No</Text>
+        <TextInput 
+            style={styles.textInput}
+            placeholder='Phone No'
+            onChangeText={(text) => setPhone(text)}
         />
         <Text style={styles.textInputLoginLabelPassword}>Password</Text>
         <TextInput 
             style={styles.textInput}
             placeholder='Password'
-            onChangeText={text => setPassword(text)}
-            value={password}
-            secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry
+        />
+        <Text style={styles.textInputLoginLabelPassword}>Confirm Password</Text>
+        <TextInput 
+            style={styles.textInput}
+            placeholder='Confirm-Password'
+            onChangeText={(text) => setConfirmPassword(text)}
+            secureTextEntry
         />
         <View style={styles.buttonContainer}>
             <Pressable style={styles.buttonStyle} onPress={handlePress}>
-                <Text style={styles.signinBtnTxt}>Signin</Text>
+                <Text style={styles.signinBtnTxt}>Signup</Text>
             </Pressable>
         </View>
-        <TouchableOpacity style={{marginBottom: 170}} onPress={RegisterationPress}>
-            <Text style={{textAlign:'center', color:'white',}}>Don't have an account? Create account</Text>
-        </TouchableOpacity>
       </View>
-      
     </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
     
     container: {
-      width:'100%',
-      height:'100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    },
-    loginImage: {
-        flex: 1,
-        alignItems: 'center',
-        marginTop: 50,
+        width:'100%',
+        height:'100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.85)',
     },
     textLogin: {
      color: 'white',
      fontSize: 60,
      fontWeight: 500,
      textAlign: 'center',
-     marginTop: 50,
+     marginTop: 20,
+     marginBottom: 30,
     },
     textInputContainer: {
         flex: 1,
@@ -110,7 +117,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 25,
         marginLeft: 40,
-        marginTop: -100,
     },
     textInputLoginLabelPassword: {
         color: 'white',
@@ -155,6 +161,5 @@ const styles = StyleSheet.create({
     }
 
    });
-   
-export default LoginScreen
 
+export default RegisterScreen

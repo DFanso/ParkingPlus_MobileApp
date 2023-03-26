@@ -10,6 +10,10 @@ import ParkingSpotDetailsScreen from './screens/ParkingSpotDetailsScreen';
 import PaymentPage from './screens/PaymentPage';
 import SplashScreen from './screens/SplashScreen';
 import QRScreen from './screens/QRScreen';
+import UserProfileScreen from './screens/UserProfileScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import PaypalComponent from './components/PayPalComponent';
+import ParkCashScreen from './screens/ParkCashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +28,10 @@ export default function App() {
           <Stack.Screen name="ParkingList" component={ParkingListScreen}/>
           <Stack.Screen name="ParkingSpotDetail" component={ParkingSpotDetailsScreen}/>
           <Stack.Screen name="Payment" component={PaymentPage}/>
-          <Stack.Screen name="QR" component={QRScreen}/>
+          <Stack.Screen name="QR" component={ParkCashScreen}/>
+          <Stack.Screen name="UserProfile" component={UserProfileScreen}/>
+          <Stack.Screen name="Registeration" component={RegisterScreen}/>
+          <Stack.Screen name="PayPal" component={PaypalComponent}/>
         </Stack.Navigator>
       </TailwindProvider>
     </NavigationContainer>

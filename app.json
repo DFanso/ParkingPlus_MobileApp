@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "parkingplus",
-    "slug": "parkingplus",
+    "name": "ParkPlus",
+    "slug": "ParkPlus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ParkPlusIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -30,7 +30,13 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Parking+ to access your camera."
+          "cameraPermission": "Allow Park+ to access your camera."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Park+ to use your location."
         }
       ]
     ]

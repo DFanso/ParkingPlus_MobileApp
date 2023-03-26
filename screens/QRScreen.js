@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Button} from 'react-native'
-import { UserCircleIcon, MapPinIcon,Bars3Icon, QrCodeIcon} from 'react-native-heroicons/outline';
+import { UserCircleIcon, MapPinIcon,Bars3Icon, ClockIcon,WalletIcon} from 'react-native-heroicons/outline';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native';
@@ -26,8 +26,14 @@ const QRScreen = () => {
   };
   
   const handlePress = () => {
-  navigation.navigate('ParkingList');
-  };
+    navigation.navigate('ParkingList')
+  }
+  const QRPress = () => {
+    navigation.navigate('QR')
+  }
+  const UserProfilePress = () => {
+    navigation.navigate('UserProfile')
+  }
   
   useLayoutEffect(() => {
   navigation.setOptions({
@@ -47,20 +53,20 @@ const QRScreen = () => {
       <StatusBar style="light" />
       <View style={styles.MenuContainer}>
         <View style={styles.menuItems}>
-          <TouchableOpacity>
-            <Bars3Icon color='#E3D33C' size={30} />
+          <TouchableOpacity onPress={QRPress}>
+            <WalletIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <UserCircleIcon color='#E3D33C' size={30} />
+          <TouchableOpacity onPress={UserProfilePress}>
+            <UserCircleIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handlePress}>
-            <MapPinIcon color='#E3D33C' size={30} />
+            <ClockIcon color='#E3D33C' size={30}/>
           </TouchableOpacity>
         </View>
         <Text style={styles.logo}>Parking+</Text>
       </View>
       <View style={styles.SelectedParkingSpot}>
-        <QrCodeIcon color='yellow' size={30} marginRight={20} />
+        <QRScreen color='yellow' size={30} marginRight={20} />
         <Text style={styles.ParkingTitle}>Scan The QR Code</Text>
       </View>
       <View style={styles.YellowContainer}>

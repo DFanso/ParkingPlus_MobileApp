@@ -1,13 +1,49 @@
 import { View, Text, StyleSheet, Pressable,ScrollView, TouchableOpacity } from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { UserCircleIcon, MapPinIcon, WalletIcon, ClockIcon} from 'react-native-heroicons/outline';
-import PaymentDetailsComponent from '../components/PaymentDetailsComponent';
+import { UserCircleIcon,ClockIcon, WalletIcon} from 'react-native-heroicons/outline';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const ParkCashScreen = () => {
 
-const PaymentPage = () => {
     const navigation = useNavigation();
+
+    const [paymentUrl, setPaymentUrl] = useState(null);
+    const [userDetails, setUserData] = useState({
+      username: '',
+      email: '',
+      phone: '',
+      plate: '',
+      cash: '',
+    });
+
+    useEffect(() => {
+      const fetchProfile = async () => {
+        try {
+          const token = await AsyncStorage.getItem('token');
+          console.log('Token from AsyncStorage:', token);
+          
+          const response = await fetch(`http://20.2.80.190:3000/api/user/profile`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+    
+          const data = await response.json();
+          setUserData(data);
+        } catch (error) {
+          console.error('Error fetching profile data:', error);
+        }
+      };
+    
+      fetchProfile();
+    }, []);
+    useEffect(() => {
+        createPayment();
+    }, []);
 
     const handlePress = () => {
       navigation.navigate('ParkingList')
@@ -18,11 +54,37 @@ const PaymentPage = () => {
     const UserProfilePress = () => {
       navigation.navigate('UserProfile')
     }
+    
+    const createPayment = async () => {
+      try {
+        const response = await fetch('http://20.2.80.190:3000/create-payment');
+        const data = await response.json();
+        console.log(data); // <-- add this line to log the data
+        const { approvalLink } = data;
+        setPaymentUrl(approvalLink);
+      } catch (error) {
+        console.error('Failed to create payment:', error);
+      }
+    };
+    
+
+    const [selectedOption, setSelectedOption] = useState('');
+    const [showPayment, setShowPayment] = useState(false);
+
     useLayoutEffect(()=> {
         navigation.setOptions({
             headerShown: false,
         })
     }, [])
+
+    const handleSelectOption = (option) => {
+      setSelectedOption(option);
+      setShowPayment(true);
+    };
+    
+    const PaypalScreen = () =>{
+      navigation.navigate('PayPal');
+    }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
@@ -41,21 +103,21 @@ const PaymentPage = () => {
         <Text style={styles.logo}>Parking+</Text>
       </View>
       <View style={styles.SelectedParkingSpot}>
-        <MapPinIcon color='yellow' size={30} marginRight={20}/>
-        <Text style={styles.ParkingTitle}>Keells Supermarket</Text>
+        <WalletIcon color='yellow' size={30} marginRight={20}/>
+        <Text style={styles.ParkingTitle}>Park+ Card</Text>
       </View>
       <View style={styles.YellowContainer}>
-        <PaymentDetailsComponent/>
+        <View style={{backgroundColor: 'rgba(0,0,0,0.8)', width: '100%', height: '60%', borderRadius: 20, padding: 20,}}>
+            <Text style={{color: 'white', fontSize: 25, fontWeight: 700,}}> Full Name</Text>
+            <Text style={{color: 'white', fontSize: 25, fontWeight: 500, marginTop: 35,}}> Parking Cash Card</Text>
+            <Text style={{color: 'white', fontSize: 25, fontWeight: 700,textAlign: 'right', marginTop: 25,}}> Rs.{userDetails.cash}</Text>
+        </View>
+        <View style={{width:'100%', height:'30%',flexDirection:'row', alignItems: 'center', justifyContent:'center'}}>
+            <Pressable style={{backgroundColor:'rgba(0,0,0,0.8)', width: '70%', height: '70%', borderRadius: 20,marginTop:20, flexDirection:'row', alignItems:'center', justifyContent:'center'}} onPress={PaypalScreen}>
+                <Text style={{color: 'white', fontSize:25, fontWeight: 700,}}>Top Up Card</Text>
+            </Pressable>
+        </View>
       </View>
-      <View style={styles.PaymentBtnContainer}>
-        <Pressable style={styles.paymentBtn}>
-            <Text style={styles.btnText}>Card</Text>
-        </Pressable>
-        <Pressable style={styles.paymentBtnCost}>
-          <Text style={styles.btnText}>Cash</Text>
-        </Pressable>
-      </View>
-      
     </SafeAreaView>
   )
 }
@@ -87,7 +149,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 60,
     },
     ParkingTitle: {
         fontSize: 30,
@@ -97,11 +159,14 @@ const styles = StyleSheet.create({
     YellowContainer: {
         backgroundColor: '#E3D33C',
         width: '100%',
-        height: '42%',
+        height: '52%',
         marginTop: 30,
         borderRadius: 27,
         padding:30,
-    },
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+,    },
     PaymentBtnContainer: {
         flex: 1,
         flexDirection: 'row',
@@ -143,4 +208,4 @@ const styles = StyleSheet.create({
         fontSize: 20,
       },
 })
-export default PaymentPage
+export default ParkCashScreen
